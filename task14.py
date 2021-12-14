@@ -4,11 +4,7 @@ from collections import Counter, defaultdict
 data = load_data('./data/data14.txt')
 
 template = data[0]
-rules = {}
-for row in data[2:]:
-    a, b = row.split(' -> ')
-    rules[a] = b
-
+rules = {a: b for a, b in [row.split(' -> ') for row in data[2:]]}
 
 class Polymer:
     def __init__(self, template, rules): 
