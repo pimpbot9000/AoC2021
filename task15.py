@@ -47,30 +47,27 @@ class SeaFloor:
 
         return n
 
-    def get_neighbour_values(selg, i, j):
-        pass
-
     def dijkstra_search(self):
         visited = np.zeros(self.A.shape, dtype=bool)
         distance = np.ones(self.A.shape, dtype=int) * INF
         distance[0, 0] = 0
         previous = {}
-        pq = [(0, (0,0))]
+        pq = [(0, (0, 0))]
 
         while pq:
 
-            i_current, j_current = heapq.heappop(pq)[1]
+            current_distance, (i_current, j_current) = heapq.heappop(pq)
             visited[i_current, j_current] = True
 
             for i, j in self.get_adjacent_coordinates(i_current, j_current):
                 if not visited[i, j]:
-                    new_distance = distance[i_current, j_current] + self.A[i, j]
+                    new_distance = current_distance + self.A[i, j]
                     if new_distance < distance[i, j]:
                         distance[i, j] = new_distance
                         previous[(i, j)] = (i_current, j_current)
-                        heapq.heappush(pq, (new_distance, (i,j)))
-                        
-        print(distance)
+                        heapq.heappush(pq, (new_distance, (i, j)))
+
+        print(distance[self.A.shape[0]-1, self.A.shape[1]-1])
 
 
 data = [[int(x) for x in row] for row in load_data('data/data15.txt')]
