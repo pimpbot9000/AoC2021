@@ -28,7 +28,7 @@ class Message:
 
         return idx, int(''.join(segments), 2)
 
-    def calculate(self, elements, type_id):
+    def evaluate(self, elements, type_id):
         operation = self.operations[type_id]
 
         if operation == "min":
@@ -78,7 +78,7 @@ class Message:
                     idx, val = self.parse(idx)
                     elements.append(val)
 
-            return idx, self.calculate(elements, type_ID)
+            return idx, self.evaluate(elements, type_ID)
 
 
 data_in_hex = load_data("data/data16.txt")[0]
