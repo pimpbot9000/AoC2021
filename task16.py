@@ -72,22 +72,22 @@ class OperatorPacket:
     def evaluate(self):
         # recursive evaluation of the packet
         operation = self.operations[self.type_id]
-        elements = [e.evaluate() for e in self.sub_packets]
+        values = [e.evaluate() for e in self.sub_packets]
 
         if operation == "min":
-            return min(elements)
+            return min(values)
         elif operation == "max":
-            return max(elements)
+            return max(values)
         elif operation == "*":
-            return np.prod(elements)
+            return np.prod(values)
         elif operation == "==":
-            return elements[0] == elements[1]
+            return values[0] == values[1]
         elif operation == "+":
-            return sum(elements)
+            return sum(values)
         elif operation == "<":
-            return elements[0] < elements[1]
+            return values[0] < values[1]
         elif operation == ">":
-            return elements[0] > elements[1]
+            return values[0] > values[1]
 
 
 class LiteralPacket:
@@ -109,7 +109,7 @@ def int_to_bin(number):
     return bin_str
 
 
-data_in_bin = ''.join([int_to_bin(int(hex, 16)) for hex in textwrap.wrap(data_in_hex, 1)])
+data_in_bin = ''.join([int_to_bin(int(hex, 16)) for hex in data_in_hex])
 
 idx, packet = Message.parse(data_in_bin, 0)
 
