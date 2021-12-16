@@ -44,13 +44,9 @@ class Message:
         idx = index + 6
 
         if type_ID == 4:
-            idx, literal_packet = Message.parse_literal_packet(
-                message, idx, version=version)
-            return idx, literal_packet
+            return Message.parse_literal_packet(message, idx, version=version)         
         else:
-            idx, operator_packet = Message.parse_operator_packet(
-                message, idx, type_ID, version=version)
-            return idx, operator_packet
+            return Message.parse_operator_packet(message, idx, type_ID, version=version)
 
 
 class OperatorPacket:
