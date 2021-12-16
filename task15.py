@@ -42,7 +42,7 @@ class SeaFloor:
             i, j = coord
             I, J = self.original.shape
             c = i // I + j // J
-            value = self.original[i % I, j % J] + c
+            value = self.original[i % I, j % J] + c - 1
             return value if value <= 9 else value % 9
 
     def get_shape(self):

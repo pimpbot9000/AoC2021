@@ -4,9 +4,61 @@ import numpy as np
 
 
 class Message:
-    def __init__(self, message):
-        self.message = message
-        self.total_version = 0
+    def parse_literal_packet(message, idx, version=0):
+        last = False
+        segments = []
+        while not last:
+            if message[idx] == '0':
+                last = True
+            segments.append(message[idx + 1: idx + 5])
+            idx += 5
+
+        return idx, LiteralPacket(int(''.join(segments), 2), version=version)
+
+    def parse_operator_packet(message, idx, type_id, version=0):
+        length_type_ID = int(message[idx], 2)
+        idx += 1
+        sub_packets = []
+
+        if length_type_ID == 1:
+            nof_subpackets = int(message[idx: idx + 11], 2)
+            idx += 11
+            for _ in range(nof_subpackets):
+                idx, val = Message.parse(message, idx)
+                sub_packets.append(val)
+
+        elif length_type_ID == 0:
+            length = int(message[idx: idx + 15], 2)
+            idx = idx + 15
+            current_idx = idx
+            while idx < current_idx + length:
+                idx, val = Message.parse(message, idx)
+                sub_packets.append(val)
+
+        return idx, OperatorPacket(type_id, sub_packets, version=version)
+
+    def parse(message, index):
+
+        version = int(message[index: index + 3], 2)
+        type_ID = int(message[index + 3: index + 6], 2)
+        idx = index + 6
+
+        if type_ID == 4:
+            idx, literal_packet = Message.parse_literal_packet(
+                message, idx, version=version)
+            return idx, literal_packet
+        else:
+            idx, operator_packet = Message.parse_operator_packet(
+                message, idx, type_ID, version=version)
+            return idx, operator_packet
+
+
+class OperatorPacket:
+    def __init__(self, type_id, packets, version=0):
+        self.type_id = type_id
+        self.sub_packets = packets
+        self.version = version
+
         self.operations = {
             0: "+",
             1: "*",
@@ -17,19 +69,10 @@ class Message:
             7: "=="
         }
 
-    def parse_literal_value(bits, idx):
-        last = False
-        segments = []
-        while not last:
-            if bits[idx] == '0':
-                last = True
-            segments.append(bits[idx + 1: idx + 5])
-            idx += 5
-
-        return idx, int(''.join(segments), 2)
-
-    def evaluate(self, elements, type_id):
-        operation = self.operations[type_id]
+    def evaluate(self):
+        # recursive evaluation of the packet
+        operation = self.operations[self.type_id]
+        elements = [e.evaluate() for e in self.sub_packets]
 
         if operation == "min":
             return min(elements)
@@ -46,39 +89,14 @@ class Message:
         elif operation == ">":
             return elements[0] > elements[1]
 
-    def parse(self, index):
 
-        version = int(self.message[index: index + 3], 2)
-        self.total_version += version
-        type_ID = int(self.message[index + 3: index + 6], 2)
-        idx = index + 6
+class LiteralPacket:
+    def __init__(self, value, version=0):
+        self.value = value
+        self.version = version
 
-        if type_ID == 4:
-            # literal packet
-            return Message.parse_literal_value(self.message, idx)
-
-        else:
-            # operator packet
-            length_type_ID = int(self.message[idx], 2)
-            idx += 1
-            elements = []
-
-            if length_type_ID == 1:
-                nof_subpackets = int(self.message[idx: idx + 11], 2)
-                idx += 11
-                for _ in range(nof_subpackets):
-                    idx, val = self.parse(idx)
-                    elements.append(val)
-
-            elif length_type_ID == 0:
-                length = int(self.message[idx: idx + 15], 2)
-                idx = idx + 15
-                current_idx = idx
-                while idx < current_idx + length:
-                    idx, val = self.parse(idx)
-                    elements.append(val)
-
-            return idx, self.evaluate(elements, type_ID)
+    def evaluate(self):
+        return self.value
 
 
 data_in_hex = load_data("data/data16.txt")[0]
@@ -91,8 +109,19 @@ def int_to_bin(number):
     return bin_str
 
 
-data_in_bin = ''.join([int_to_bin(int(hex, 16))
-                      for hex in textwrap.wrap(data_in_hex, 1)])
+data_in_bin = ''.join([int_to_bin(int(hex, 16)) for hex in textwrap.wrap(data_in_hex, 1)])
 
-m = Message(data_in_bin)
-print(m.parse(0))
+idx, packet = Message.parse(data_in_bin, 0)
+
+
+def version_sum(packet):
+    if type(packet) == LiteralPacket:
+        return packet.version
+    else:
+        return sum([version_sum(p) for p in packet.sub_packets]) + packet.version
+
+
+evaluation = packet.evaluate()
+s = version_sum(packet)
+print("version sum", s)
+print("evaluation", evaluation)
