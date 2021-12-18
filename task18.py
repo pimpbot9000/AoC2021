@@ -32,7 +32,6 @@ class Number:
                 cl_right, cr_right, right = recurse(n[1], depth + 1)
 
                 if cl_left != 0 or cr_left != 0:
-
                     if type(right) == int:
                         return cl_left, 0, [left, right + cr_left]
                     elif type(right) == list:
@@ -41,7 +40,6 @@ class Number:
                         return cl_left, 0, [left, right]
 
                 elif cl_right != 0 or cr_right != 0:
-
                     if type(left) == int:
                         return 0, cr_right, [left + cl_right, right]
                     elif type(left) == list:
@@ -55,19 +53,19 @@ class Number:
             if type(number) == int:
                 return number + push
             else:
-                left = push_right(number[0], push)
-                right = push_right(number[1], 0)
+                left = push_right(number[0], push) # push to left
+                right = number[1]
                 return [left, right]
 
         def push_left(number, push):  # push to left side rightmost
             if type(number) == int:
                 return number + push
-            else:
-                left = push_left(number[0], 0)
+            else:                
                 right = push_left(number[1], push)
+                left = number[0]
                 return [left, right]
 
-        result = recurse(self.number, 1)[2]
+        _, _, result = recurse(self.number, 1)
 
         self.number = result
 
@@ -84,9 +82,9 @@ class Number:
             elif explodable: # already "exploded"
                 return n[0], n[1]
             else:
-                if type(n[0]) == list and not explodable:
+                if type(n[0]) == list:
                     recurse(n[0], depth + 1)
-                if type(n[1]) == list and not explodable:
+                if type(n[1]) == list:
                     recurse(n[1], depth + 1)
             
         recurse(self.number, 1)
@@ -96,17 +94,17 @@ class Number:
 
         splittable = False
 
-        def recurse(n, depth):
+        def recurse(n):
             nonlocal splittable
             if type(n) == int and n >= 10:
                 splittable = True
             else:
                 if not splittable and type(n) == list:
-                    recurse(n[0], depth + 1)
+                    recurse(n[0])
                 if not splittable and type(n) == list:
-                    recurse(n[1], depth + 1)
+                    recurse(n[1])
 
-        recurse(self.number, 1)
+        recurse(self.number)
 
         return splittable
 
