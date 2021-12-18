@@ -1,18 +1,18 @@
+from utils import load_data
 import math
+
 
 class Number:
     def __init__(self, number):
         self.number = number
 
-
-
     def add(self, other):
         return Number([self.number, other.number])
-        
+
     def print(self):
         print("Number", self.number)
 
-    def explode2(self):
+    def explode(self):
 
         exploded = False
 
@@ -20,41 +20,38 @@ class Number:
             nonlocal exploded
             if depth >= 5 and type(n) == list and type(n[0]) == int and type(n[1]) == int and not exploded:
                 exploded = True
-                
-                return n[0], n[1], 0           
-                
+                return n[0], n[1], 0
+
             elif type(n) == int:
-                return 0,0, n
+                return 0, 0, n
 
             else:
                 # cl = "carry left"
                 # ct = "carry right"
-                cl_left, cr_left, left = recurse(n[0], depth + 1 )
-                cl_right, cr_right, right = recurse(n[1], depth + 1 )
+                cl_left, cr_left, left = recurse(n[0], depth + 1)
+                cl_right, cr_right, right = recurse(n[1], depth + 1)
 
                 if cl_left != 0 or cr_left != 0:
 
                     if type(right) == int:
                         return cl_left, 0, [left, right + cr_left]
                     elif type(right) == list:
-                        new_right = push_right(right, cr_left)
-                        return cl_left, 0, [left, new_right]
-                    else:
-                        return cl_left, cr_right, [left, right]
+                        if cr_left != 0: # don't push zeros
+                            right = push_right(right, cr_left)                        
+                        return cl_left, 0, [left, right]
 
-                elif cl_right != 0 or cr_right != 0:    
+                elif cl_right != 0 or cr_right != 0:
 
-                    if type(left) == int:                        
+                    if type(left) == int:
                         return 0, cr_right, [left + cl_right, right]
                     elif type(left) == list:
-                        new_left = push_left(left, cl_right)
-                        return 0, cr_right, [new_left, right]
-
+                        if cl_right != 0: # don't push zeros
+                            left = push_left(left, cl_right)
+                        return 0, cr_right, [left, right]
                 else:
-                    return 0,0, [left, right]
+                    return 0, 0, [left, right]
 
-        def push_right(number, push): # push to right side leftmost
-
+        def push_right(number, push):  # push to right side leftmost
             if type(number) == int:
                 return number + push
             else:
@@ -62,7 +59,7 @@ class Number:
                 right = push_right(number[1], 0)
                 return [left, right]
 
-        def push_left(number, push): # push to left side rightmost
+        def push_left(number, push):  # push to left side rightmost
             if type(number) == int:
                 return number + push
             else:
@@ -70,52 +67,54 @@ class Number:
                 right = push_left(number[1], push)
                 return [left, right]
 
-        _, _, result = recurse(self.number,1)
+        result = recurse(self.number, 1)[2]
 
         self.number = result
 
         return exploded
-        
+
     def is_explodable(self):
-        
+
         explodable = False
 
         def recurse(n, depth):
             nonlocal explodable
             if depth >= 5:
                 explodable = True
+            elif explodable: # already "exploded"
+                return n[0], n[1]
             else:
                 if type(n[0]) == list and not explodable:
-                    recurse(n[0], depth + 1 )
+                    recurse(n[0], depth + 1)
                 if type(n[1]) == list and not explodable:
                     recurse(n[1], depth + 1)
-
+            
         recurse(self.number, 1)
         return explodable
-    
+
     def is_splittable(self):
 
         splittable = False
 
         def recurse(n, depth):
             nonlocal splittable
-            if type(n) == int and n >= 10:                
+            if type(n) == int and n >= 10:
                 splittable = True
             else:
                 if not splittable and type(n) == list:
                     recurse(n[0], depth + 1)
                 if not splittable and type(n) == list:
-                    recurse(n[1], depth +1)
+                    recurse(n[1], depth + 1)
 
         recurse(self.number, 1)
 
         return splittable
-        
-    def reduce2(self):
+
+    def reduce(self):
 
         while True:
             if self.is_explodable():
-                self.explode2()
+                self.explode()
             elif self.is_splittable():
                 self.split()
             else:
@@ -123,6 +122,7 @@ class Number:
 
     def split(self):
         splitted = False
+
         def recurse(n):
             nonlocal splitted
             if type(n) == int and n >= 10 and not splitted:
@@ -134,11 +134,11 @@ class Number:
                 left = recurse(n[0])
                 right = recurse(n[1])
                 return [left, right]
-        
+
         self.number = recurse(self.number)
 
         return splitted
-        
+
     def magnitude(self):
 
         def recurse(n):
@@ -150,19 +150,19 @@ class Number:
                 return 3 * left + 2 * right
         return recurse(self.number)
 
-from utils import load_data
 
 data = load_data("data/data18.txt")
 
 numbers = []
 for row in data:
-   numbers.append(eval(row))
+    numbers.append(eval(row))
+
 
 def part1():
     summa = Number(numbers[0])
     for i in range(1, len(numbers)):
         summa = summa.add(Number(numbers[i]))
-        summa.reduce2()
+        summa.reduce()
 
     print(summa.magnitude())
 
@@ -176,16 +176,17 @@ def part2():
             n2 = Number(numbers[j])
 
             summa1 = n1.add(n2)
-            summa1.reduce2()
+            summa1.reduce()
             magnitude1 = summa1.magnitude()
             max_magnitude = max(max_magnitude, magnitude1)
 
             summa2 = n2.add(n1)
-            summa2.reduce2()
+            summa2.reduce()
             magnitude2 = summa2.magnitude()
             max_magnitude = max(max_magnitude, magnitude2)
 
     print(max_magnitude)
+
 
 part1()
 part2()
