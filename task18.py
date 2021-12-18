@@ -82,9 +82,9 @@ class Number:
             elif explodable: # already "exploded"
                 return n[0], n[1]
             else:
-                if type(n[0]) == list:
+                if not explodable and type(n[0]) == list:
                     recurse(n[0], depth + 1)
-                if type(n[1]) == list:
+                if not explodable and type(n[1]) == list:
                     recurse(n[1], depth + 1)
             
         recurse(self.number, 1)
