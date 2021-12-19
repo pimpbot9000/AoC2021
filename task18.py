@@ -146,6 +146,7 @@ class Number:
                 left = recurse(n[0])
                 right = recurse(n[1])
                 return 3 * left + 2 * right
+
         return recurse(self.number)
 
 
@@ -161,7 +162,6 @@ def part1():
     for i in range(1, len(numbers)):
         summa = summa.add(Number(numbers[i]))
         summa.reduce()
-
     print(summa.magnitude())
 
 
