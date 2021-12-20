@@ -33,7 +33,7 @@ class Image:
 
     def get_value(self, coord, p=0):
         i, j = coord
-        if self.rim and (i < self.min_i + p or i > self.max_i - p or j < self.min_j + p or j > self.max_j - p):
+        if self.rim and (i < self.min_i - p or i > self.max_i + p or j < self.min_j - p or j > self.max_j + p):
             return 1
         else:
             return 1 if coord in self.points else 0
@@ -78,7 +78,7 @@ class Image:
 
         for i in range(self.min_i, self.max_i + 1):
             for j in range(self.min_j, self.max_j + 1):
-                grid_value = self.get_grid_value((i, j), self.padding)
+                grid_value = self.get_grid_value((i, j), -self.padding)
                 pixel_value = self.get_algorithm_value(grid_value)
                 if pixel_value == 1:
                     enhanced.add((i, j))
