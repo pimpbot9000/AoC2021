@@ -16,3 +16,4 @@ this modifies the dictionary (creates the nonexisting key-value pair)
 * ```PriorityQueue``` is a thread-safe wrapper for ```heapq``` making ```heapq``` faster since there's no overhead from locking
 * Dijkstra is a special case of A* algorithm (I guess I knew this already)
 * Keyword ```nonlocal``` can be used to access variable outside function scope
+
