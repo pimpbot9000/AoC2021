@@ -7,6 +7,7 @@
 * List comprehension is ofter more concise than map
 * ```functool``` library has cool ```reduce``` method
 * ...then again, reduce is not always the most readable implementation even though cool kids use it
+* ```max``` and ```min``` takes a keyword argument ```key``` and lambda function can be passed.
 * List comprehension does not work only for lists, but also for sets and even for dictionaries!
 * ```numpy``` overloads methods for basic arithmetics i.e array can be multiplied by an integer.
 * Even if array lookup is slightly faster, storing points (coordinates) in a set especially when bounds are undefined saves a lot of effort. Lookup for (hash)set is effectively constant time with a reasonably small multiplier.
