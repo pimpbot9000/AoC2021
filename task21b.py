@@ -85,7 +85,9 @@ throws = list(it.product(*[[1, 2, 3] for _ in range(3)]))
 sums = [sum(x) for x in throws]
 throws = Counter(sums)
 
+# Initialize with puzzle input
 game = Game(9, 3)
 
 p = Play(game, throws)
 print(p.play(player=1))
+print(p.play(player=2))
