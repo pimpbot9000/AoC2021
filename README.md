@@ -9,7 +9,7 @@
 * ...then again, reduce is not always the most readable implementation even though cool kids use it
 * List comprehension does not work only for lists, but also for sets and even for dictionaries!
 * ```numpy``` overloads methods for basic arithmetics i.e array can be multiplied by an integer.
-* Even if array lookup is slighlty faster, storing points (coordinates) in a set especially when bounds are undefined saves a lot of effort. Lookup for (hash)set is effectively constant time with a reasonably small multiplier.
+* Even if array lookup is slightly faster, storing points (coordinates) in a set especially when bounds are undefined saves a lot of effort. Lookup for (hash)set is effectively constant time with a reasonably small multiplier.
 * ```collections``` library has handy ```defaultdict``` and ```Counter```! Beware, iteration breaks down if unexisting key is accessed since
 this modifies the dictionary (creates the nonexisting key-value pair)
 * Numpy array can take tuple as argument to access element: one can use ```arr[coordinate]``` instead of painstaking ```arr[i, j]```
