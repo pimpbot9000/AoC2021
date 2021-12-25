@@ -1,7 +1,3 @@
-"""
-    Original code from Reddit for playing around and testing stuff
-"""
-
 from utils import load_data
 
 
@@ -19,26 +15,25 @@ class SeaFloor:
             print(''.join(self.points.get((i, j), '.')
                   for j in range(self.shape[1])))
 
-    def move(self, symbol, f):
+    def move(self, moving_symbol, f):
         has_moved = False
         new_points = {}
-        moved = set()
-        for i in range(self.shape[0]):
-            for j in range(self.shape[1]):
-                if self.points.get((i, j)) == symbol:
-                    next_coord = f((i, j))
 
-                    if not self.points.get(next_coord):
-                        has_moved = True
-                        new_points[next_coord] = symbol
-                        moved.add((i, j))
-                    else:
-                        new_points[(i, j)] = symbol
+        for (i, j), symbol in self.points.items():
+            if symbol == moving_symbol:
 
-        for point in moved:
-            self.points.pop(point)
+                next_coord = f((i, j))
 
-        self.points.update(new_points)
+                if not self.points.get(next_coord):
+                    has_moved = True
+                    new_points[next_coord] = moving_symbol
+                else:
+                    new_points[(i, j)] = moving_symbol
+
+            elif symbol:
+                new_points[(i, j)] = self.points.get((i, j))
+
+        self.points = new_points
         return has_moved
 
     def move_east(self):
@@ -54,15 +49,15 @@ class SeaFloor:
 
 
 data = load_data('data/data25.txt')
-s = SeaFloor(data)
-s.print()
+sea_floor = SeaFloor(data)
+sea_floor.print()
 print("-----------")
 has_moved = True
 counter = 0
 while has_moved:
     counter += 1
-    has_moved = s.move_both_directions()
-    if counter % 100:
-        print("...thinking")
+    has_moved = sea_floor.move_both_directions()
+    if counter % 100 == 0:
+        print("...thinking:", (counter // 100) * 100)
 
 print(counter)
