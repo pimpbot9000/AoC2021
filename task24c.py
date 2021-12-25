@@ -1,4 +1,6 @@
-import functools
+"""
+Original code from Reddit for playing around
+"""
 from utils import load_data
 
 def read(state, n):
