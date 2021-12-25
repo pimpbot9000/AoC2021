@@ -3,7 +3,7 @@
 ## Python lessons learned so far
 
 * One can iterate over string characters using for loop
-* Matching parenthesis <-> stack !
+* Matching parenthesis <-> stack ! :)
 * List comprehension is ofter more concise than map
 * ```functool``` library has cool ```reduce``` method
 * ...then again, reduce is not always the most readable implementation even though cool kids use it
@@ -19,4 +19,6 @@ this modifies the dictionary (creates the nonexisting key-value pair)
 * Dijkstra is a special case of A* algorithm (I guess I knew this already)
 * Keyword ```nonlocal``` can be used to access variable outside function scope (especially handy when recursion)
 * Sommore recursion with memoization!
+* ```Functools.lru-cache``` is _much_ faster than self made cache with ```dict```.
+* PyPy
 
