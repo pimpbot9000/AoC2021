@@ -15,14 +15,14 @@ class SeaFloor:
             print(''.join(self.points.get((i, j), '.')
                   for j in range(self.shape[1])))
 
-    def move(self, moving_symbol, f):
+    def move(self, moving_symbol, move_to):
         has_moved = False
         new_points = {}
 
         for (i, j), symbol in self.points.items():
             if symbol == moving_symbol:
 
-                next_coord = f((i, j))
+                next_coord = move_to((i, j))
 
                 if not self.points.get(next_coord):
                     has_moved = True
@@ -31,7 +31,7 @@ class SeaFloor:
                     new_points[(i, j)] = moving_symbol
 
             elif symbol:
-                new_points[(i, j)] = self.points.get((i, j))
+                new_points[(i, j)] = symbol
 
         self.points = new_points
         return has_moved
