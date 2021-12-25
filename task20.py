@@ -82,6 +82,7 @@ class Image:
                 pixel_value = self.get_algorithm_value(grid_value)
                 if pixel_value == 1:
                     enhanced.add((i, j))
+                # check the edges
                 if i == self.min_i or i == self.max_i or j == self.min_j or j == self.max_j:
                     if pixel_value == 1:
                         counter += 1
@@ -99,7 +100,7 @@ class Image:
 
 image = Image(algorithm, rows)
 
-for i in range(50):
+for i in range(3):
     image.enhance()
     print("round", i)
 
