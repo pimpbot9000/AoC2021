@@ -3,12 +3,8 @@ from utils import load_data
 
 class SeaFloor:
     def __init__(self, data):
-        self.points = {}
         self.shape = (len(data), len(data[0]))
-        for i in range(self.shape[0]):
-            for j in range(self.shape[1]):
-                if data[i][j] != '.':
-                    self.points[(i, j)] = data[i][j]
+        self.points = {(i, j): data[i][j] for i in range(self.shape[0]) for j in range(self.shape[1]) if data[i][j] != '.'}
 
     def print(self):
         for i in range(self.shape[0]):
